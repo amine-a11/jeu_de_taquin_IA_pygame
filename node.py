@@ -1,8 +1,10 @@
 class Node:
-    def __init__(self,bord):
+    def __init__(self,bord,g):
         self.bord=bord
         self.children=[]
         self.parent=None
+        self.g=g
+        self.f=0
     def get_empty_pos(self):
         for i in range(len(self.bord)):
             for j in range(len(self.bord[i])):
@@ -29,7 +31,7 @@ class Node:
         x=pos[0]
         y=pos[1]
         aux[x][y],aux[x+1][y]=aux[x+1][y],aux[x][y]
-        child=Node(aux)
+        child=Node(aux,self.g+1)
         self.children.append(child)
         child.parent=self
     def move_up(self):
@@ -41,7 +43,7 @@ class Node:
         x=pos[0]
         y=pos[1]
         aux[x][y],aux[x-1][y]=aux[x-1][y],aux[x][y]
-        child=Node(aux)
+        child=Node(aux,self.g+1)
         self.children.append(child)
         child.parent=self
     def move_right(self):
@@ -53,7 +55,7 @@ class Node:
         x=pos[0]
         y=pos[1]
         aux[x][y],aux[x][y+1]=aux[x][y+1],aux[x][y]
-        child=Node(aux)
+        child=Node(aux,self.g+1)
         self.children.append(child)
         child.parent=self
     def move_left(self):
@@ -65,44 +67,16 @@ class Node:
         x=pos[0]
         y=pos[1]
         aux[x][y],aux[x][y-1]=aux[x][y-1],aux[x][y]
-        child=Node(aux)
+        child=Node(aux,self.g+1)
         self.children.append(child)
         child.parent=self
-
-# BORD=[
-#     [3,2,7],
-#     [8,6,0],
-#     [1,5,4]
-# ]
-
-# TARGET=[
-#     [1,2,3],
-#     [8,0,4],
-#     [7,6,5]
-# ]
-# def toString(b):
-#     s=''
-#     for i in b:
-#         for j in i:
-#             s+=str(j)
-#     return s
-# root=Node(BORD)
-# nodes=[]
-# nodes.append(root)
-# visited=set()
-# def showNodes(node):
-#     if not node.parent:
-#         print(node.bord)
-#         return
-#     showNodes(node.parent)
-#     print(node.bord)
-# while nodes :
-#     if nodes[0].bord==TARGET:
-#         showNodes(nodes[0])
-#         break
-#     nodes[0].allPossibleMoves()
-#     for child in nodes[0].children:
-#         if toString(child.bord) not in visited:
-#             nodes.append(child)
-#     visited.add(toString(nodes.pop(0).bord))
-
+    def h(self,target):
+        n=0
+        y=0
+        for i in self.bord:
+            x=0
+            for j in i:
+                if j!=target[y][x] and j!=0:n+=1
+                x+=1
+            y+=1
+        return n

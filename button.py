@@ -15,17 +15,17 @@ clicked = False
 class Button():
 	#colours for button and text
     counter = 0
-    button_col = (25, 190, 225)
-    hover_col = (75, 225, 255)
-    click_col = (50, 150, 255)
-    text_col = white
-    def __init__(self, x, y, text,screen,width,height):
+    def __init__(self, x, y, text,screen,width,height,button_col = (25, 190, 225),hover_col = (75, 225, 255),click_col = (50, 150, 255),text_col = white):
         self.x = x
         self.y = y
         self.text = text
         self.screen = screen
         self.width=width
         self.height=height
+        self.button_col=button_col
+        self.hover_col=hover_col
+        self.click_col=click_col
+        self.text_col=text_col
     def draw_button(self):
         global clicked
         action = False

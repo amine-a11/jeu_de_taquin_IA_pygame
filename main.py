@@ -1,3 +1,4 @@
+import collections
 from node import Node
 from button import Button
 import pygame
@@ -20,6 +21,7 @@ pygame.mixer.init()
 SOUND=pygame.mixer.Sound('clack.wav')
 LARGEUR=False
 PROFONDEUR=False
+ASTAR=False
 FONT=pygame.font.SysFont('comicsans',40)
 FONT2=pygame.font.SysFont('comicsans',20)
 BORDSIZE=3
@@ -33,13 +35,13 @@ TARGET=[
     [8,0,4],
     [7,6,5]
 ]
-
 SBS=6
 WIDTH,HEIGHT=700,500
 GAME_WIDTH,GAME_HEIGHT=300,300
 SQUARESIZE=GAME_HEIGHT/BORDSIZE
 SOLUTIONPATH_LARGEUR=[]
 SOLUTIONPATH_PROFONDEUR=[]
+SOLUTIONPATH_ASTAR=[]
 FPS=60
 WIN=pygame.display.set_mode((WIDTH,HEIGHT))
 WHITE=(255,255,255)
@@ -55,7 +57,8 @@ b3=Button(100+110*2+60,GAME_HEIGHT+30,ALGS[2][0],WIN,110,40)
 b4=Button(100+110*3+90,GAME_HEIGHT+30,ALGS[3][0],WIN,100,40)
 
 nbdenoeudsvisites={'Largeur':-1,'Profondeur':-1,'Prof limite':-1,'A*':-1}
-
+BACKGROUNDIMAGE=pygame.transform.scale(pygame.image.load('background_image.jpg'),(WIDTH,HEIGHT))
+MAIN_MENU_BACKGROUNDIMAGE=pygame.transform.scale(pygame.image.load('main_menu_background_image.png'),(WIDTH,HEIGHT))
 # -----------------------End CONST-----------------------------------------------
 
 # --------------------Star window title and icon-------------------------------
@@ -100,7 +103,7 @@ def toString(b):
     return s
 
 def solve_largeur():
-    root=Node(BORD)
+    root=Node(BORD,0)
     nodes=[]
     nodes.append(root)
     visited=set()
@@ -121,7 +124,7 @@ def solve_largeur():
     LARGEUR=True
     nbdenoeudsvisites['Largeur']=n
     pygame.time.set_timer(pygame.USEREVENT,250)
-   
+
 def showSolution(nb,tab):
     nb[0]+=1
     if nb[0]>=len(tab):
@@ -129,6 +132,9 @@ def showSolution(nb,tab):
         LARGEUR=False
         global PROFONDEUR
         PROFONDEUR=False
+        global ASTAR
+        ASTAR=False
+
         nb[0]=0
         pygame.time.set_timer(pygame.USEREVENT,0)
         return
@@ -147,7 +153,7 @@ def getsolpath2(node):
         node=node.parent
     SOLUTIONPATH_PROFONDEUR=SOLUTIONPATH_PROFONDEUR[::-1]
 def solve_profondeur():
-    root=Node(BORD)
+    root=Node(BORD,0)
     nodes=[]
     nodes.append(root)
     visited=set()
@@ -165,7 +171,6 @@ def solve_profondeur():
                 n+=1
                 nodes.append(child)
                 visited.add(toString(child.bord))
-        # visited.add(toString(nodes.pop().bord))
     global PROFONDEUR
     PROFONDEUR=True
     nbdenoeudsvisites['Profondeur']=n
@@ -174,7 +179,39 @@ def solve_profondeur():
 
 
 # ------------------------------------End Recherche en Profondeur----------------------------------------------
+# ------------------------------------Start Recherche A*----------------------------------------------
+def solve_Astar():
+    root=Node(BORD,0)
+    root.f=root.h(TARGET)+root.g
+    n=0
+    queue=collections.deque([root])
+    visited=set()
+    visited.add(root)
+    while queue:
+        queue=collections.deque(sorted(list(queue),key=lambda node:node.f))
+        node=queue.popleft()
+        if node.bord==TARGET:
+            print("DONE")
+            # print(node.bord)
+            getSolPath(node,SOLUTIONPATH_ASTAR)
+            break
+        node.allPossibleMoves()
+        for child in node.children:
+            if toString(child.bord) not in visited:
+                n+=1
+                child.f=child.h(TARGET)+child.g
+                print(child.h(TARGET))
+                queue.appendleft(child)
+                visited.add(toString(child.bord))
+    global ASTAR
+    ASTAR=True
+    nbdenoeudsvisites['A*']=n
+    print(len(SOLUTIONPATH_ASTAR))
+    pygame.time.set_timer(pygame.USEREVENT,250)
 
+
+
+# ------------------------------------End Recherche A*----------------------------------------------
 
 #-------------------------------------Start Draw functions----------------------------------------
 
@@ -187,17 +224,18 @@ def reset_bord():
     ]
 
 def display_bord():
-    pygame.draw.rect(WIN,(255,0,0),[(WIDTH-GAME_WIDTH)/2, 0, GAME_WIDTH, GAME_HEIGHT],1)
+    # pygame.draw.rect(WIN,(255,0,0),[(WIDTH-GAME_WIDTH)/2, 0, GAME_WIDTH, GAME_HEIGHT],1)
     for i in range(3):
         for j in range(3):
             if BORD[i][j]==0:continue
+            rectX=(WIDTH-GAME_WIDTH)/2+j*SQUARESIZE+SBS/2
+            rectY=i*SQUARESIZE+SBS/2
+            pygame.draw.rect(WIN,(0,0,255),[rectX,rectY,SQUARESIZE-SBS,SQUARESIZE-SBS],border_radius=15)
             x=FONT.render(str(BORD[i][j]),1,(0,0,0))
             textX=(WIDTH-GAME_WIDTH)/2+(SQUARESIZE/2-(x.get_width())/2)+j*SQUARESIZE
             textY=i*SQUARESIZE+20
             WIN.blit(x,(textX,textY))
-            rectX=(WIDTH-GAME_WIDTH)/2+j*SQUARESIZE+SBS/2
-            rectY=i*SQUARESIZE+SBS/2
-            pygame.draw.rect(WIN,(0,0,255),[rectX,rectY,SQUARESIZE-SBS,SQUARESIZE-SBS],1,border_radius=15)
+
 
 def display_algo():
     if b1.draw_button():
@@ -209,7 +247,8 @@ def display_algo():
     if b3.draw_button():
         print(b3.text)
     if b4.draw_button():
-        print(b4.text)
+        reset_bord()
+        solve_Astar()
     for algo in ALGS:
         pygame.draw.rect(WIN,pygame.Color(192,192,192),[algo[1],algo[2]+60,algo[3],algo[4]])
         x=FONT2.render(str(nbdenoeudsvisites[algo[0]]),1,(0,0,0))
@@ -229,21 +268,48 @@ def main():
             if event.type==pygame.QUIT:
                 run=False
             if event.type==pygame.USEREVENT:
-                if LARGEUR==True:
+                if LARGEUR:
                     showSolution(lar,SOLUTIONPATH_LARGEUR)
-                if PROFONDEUR==True:
+                if PROFONDEUR:
                     showSolution(prof,SOLUTIONPATH_PROFONDEUR)
+                if ASTAR:
+                    showSolution(prof,SOLUTIONPATH_ASTAR)
+
             if event.type==pygame.MOUSEBUTTONDOWN:
                 x,y=pygame.mouse.get_pos()
                 # play mode 
-        WIN.fill(WHITE)
+        # WIN.fill(WHITE)
+        WIN.blit(BACKGROUNDIMAGE,(0,0))
         display_bord()
         display_algo()
         pygame.display.update()
     pygame.quit()
 
+# ---------------------------------Start of main_menu-------------------------
 
+def main_menu():
+    clock=pygame.time.Clock()
+    run=True
+    btn=Button(200,100,"Experimental Mode",WIN,110,40,(255,255,255))
+    while run:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                run=False
+            if event.type==pygame.MOUSEBUTTONDOWN:
+                x,y=pygame.mouse.get_pos()
+
+        WIN.blit(MAIN_MENU_BACKGROUNDIMAGE,(0,0))
+        if btn.draw_button():
+            print("hello")
+
+        pygame.display.update()
+    pygame.quit()
+
+
+# ---------------------------------end of main_menu-------------------------
 # =============================
 if __name__=="__main__":
     main()
+    # main_menu()
     
