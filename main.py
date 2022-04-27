@@ -2,8 +2,9 @@ import collections
 from node import Node
 from button import Button
 import pygame
+import pygame_menu
 # pop up window test
-# from pygame._sdl2 import messagebox
+from pygame._sdl2 import messagebox
 # answer = messagebox(
 #     "I will open two windows! Continue?",
 #     "Hello!",
@@ -58,7 +59,6 @@ b4=Button(100+110*3+90,GAME_HEIGHT+30,ALGS[3][0],WIN,100,40)
 
 nbdenoeudsvisites={'Largeur':-1,'Profondeur':-1,'Prof limite':-1,'A*':-1}
 BACKGROUNDIMAGE=pygame.transform.scale(pygame.image.load('background_image.jpg'),(WIDTH,HEIGHT))
-MAIN_MENU_BACKGROUNDIMAGE=pygame.transform.scale(pygame.image.load('main_menu_background_image.png'),(WIDTH,HEIGHT))
 # -----------------------End CONST-----------------------------------------------
 
 # --------------------Star window title and icon-------------------------------
@@ -258,6 +258,7 @@ def display_algo():
 
 
 def main():
+    reset_bord()
     clock=pygame.time.Clock()
     run=True
     prof=[0]
@@ -285,12 +286,13 @@ def main():
         pygame.display.update()
     pygame.quit()
 
-# ---------------------------------Start of main_menu-------------------------
-
-def main_menu():
+# ---------------------------------Start of play Mode-------------------------
+def Play_Mode():
     clock=pygame.time.Clock()
     run=True
-    btn=Button(200,100,"Experimental Mode",WIN,110,40,(255,255,255))
+    global BORD
+    BORD=[[1,2,3],[4,5,6],[7,0,8]]
+    you_win=False
     while run:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -298,18 +300,47 @@ def main_menu():
                 run=False
             if event.type==pygame.MOUSEBUTTONDOWN:
                 x,y=pygame.mouse.get_pos()
+                move((x,y))
+                if BORD==[[1,2,3],[4,5,6],[7,8,0]]:
+                    you_win=True
 
-        WIN.blit(MAIN_MENU_BACKGROUNDIMAGE,(0,0))
-        if btn.draw_button():
-            print("hello")
-
+        WIN.blit(BACKGROUNDIMAGE,(0,0))
+        display_bord()
         pygame.display.update()
+        if you_win:
+            answer = messagebox(
+                "Congrats",
+                "Do you wanna play again",
+                info=True,
+                buttons=("No", "Yes"),
+                return_button=0,
+                escape_button=1,
+            )
+            if answer:
+                you_win=False
+                reset_bord()
+            else:
+                main_menu()
+
     pygame.quit()
+    
 
 
-# ---------------------------------end of main_menu-------------------------
+# ---------------------------------end of Play Mode-------------------------
+# ----------------------------------start main menu----------------------------
+
+def main_menu():
+    menu = pygame_menu.Menu('Jeu Taquin', WIDTH, HEIGHT,
+                       theme=pygame_menu.themes.THEME_BLUE)
+    # menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+    menu.add.button('Experimental Mode', main)
+    menu.add.button('Play Mode', Play_Mode)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+    menu.mainloop(WIN)
+
+
+# ----------------------------------End main menu---------------------------- 
 # =============================
 if __name__=="__main__":
-    main()
-    # main_menu()
+    main_menu()
     

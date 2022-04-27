@@ -15,7 +15,7 @@ clicked = False
 class Button():
 	#colours for button and text
     counter = 0
-    def __init__(self, x, y, text,screen,width,height,button_col = (25, 190, 225),hover_col = (75, 225, 255),click_col = (50, 150, 255),text_col = white):
+    def __init__(self, x, y, text,screen,width,height,button_col = (25, 190, 225),hover_col = (75, 225, 255),click_col = (50, 150, 255),text_col = white,font = pygame.font.SysFont('Constantia', 20)):
         self.x = x
         self.y = y
         self.text = text
@@ -26,6 +26,7 @@ class Button():
         self.hover_col=hover_col
         self.click_col=click_col
         self.text_col=text_col
+        self.font=font
     def draw_button(self):
         global clicked
         action = False
@@ -55,7 +56,7 @@ class Button():
         pygame.draw.line(self.screen, black, (self.x + self.width, self.y), (self.x + self.width, self.y + self.height), 2)
 
 		#add text to button
-        text_img = font.render(self.text, True, self.text_col)
+        text_img = self.font.render(self.text, True, self.text_col)
         text_len = text_img.get_width()
         self.screen.blit(text_img, (self.x + int(self.width / 2) - int(text_len / 2), self.y +self.height/4))
         return action
