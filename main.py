@@ -4,23 +4,14 @@ from button import Button
 from random import randint
 import pygame
 import pygame_menu
-# pop up window test
 from pygame._sdl2 import messagebox
-# answer = messagebox(
-#     "I will open two windows! Continue?",
-#     "Hello!",
-#     info=True,
-#     buttons=("Yes", "No", "Chance"),
-#     return_button=0,
-#     escape_button=1,
-# )
-
 pygame.font.init()
 pygame.init()
 pygame.mixer.init()
 # -----------------------Start CONST-----------------------------------------------
 
 SOUND=pygame.mixer.Sound('clack.wav')
+SHUFFLE_NUMBER=100
 LARGEUR=False
 PROFONDEUR=False
 ASTAR=False
@@ -98,7 +89,7 @@ pygame.display.set_caption("jeu taquin")
 
 def shuffle_bord():
     global BORDTOPLAY
-    for _ in range(100):
+    for _ in range(SHUFFLE_NUMBER):
         bordI=randint(0,2)
         bordJ=randint(0,2)
         dx,dy=0,0
@@ -345,7 +336,7 @@ def display_algo():
         solve_profondeur()
     if b3.draw_button():
         reset_bord()
-        solve_profondeur_limite(3)
+        solve_profondeur_limite(20)
     if b4.draw_button():
         reset_bord()
         solve_Astar()
