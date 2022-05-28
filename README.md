@@ -23,7 +23,7 @@ pygame-menu: `pip install pygame-menu -U`<br>
 ## 2.Application Overview:
 
 This application is divided into two sections :
-- experimental mode🧪: experimental mode allows you to solve the 8-puzzle game with 4 different algorithms and count the number of visited nodes if each algorithme
+- experimental mode🧪: experimental mode allows you to solve the 8-puzzle game with 4 different algorithms and count the number of visited nodes in each algorithme
 - play mode 🎮: play Mode allows you to try and beat the game yourself.
 
 <img src="overview.jpg" alt="overview" width="600" height="600">
@@ -78,5 +78,7 @@ After running these algorithms we get this:
 
 <img src="final_res.jpg" alt="A*" width="550" height="500">
 
-__we can notice that the number of visited nodes in the A* algorithm is the smallest__
+__we can notice that the number of visited nodes in the A* algorithm is the smallest and the limited dfs(with a limit of 3) does not have a solution(-1)__
+
+<p style="text-align:center;font-size:20px;">made by <a href="https://github.com/amine-a11">amine-a11</a> && <a href="https://github.com/mehrezbey">mehrezbey</a></p>
 
