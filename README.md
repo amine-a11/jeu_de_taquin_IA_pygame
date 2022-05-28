@@ -26,7 +26,7 @@ This application is divided into two sections :
 - experimental mode🧪: experimental mode allows you to solve the 8-puzzle game with 4 different algorithms and count the number of visited nodes in each algorithme
 - play mode 🎮: play Mode allows you to try and beat the game yourself.
 
-<img src="overview.jpg" alt="overview" width="600" height="600">
+<img src="images/overview.jpg" alt="overview" width="600" height="600">
 
 ---
 
@@ -34,7 +34,7 @@ This application is divided into two sections :
 
 You can increase the difficulty of the game by increasing the __SHUFFLE_NUMBER__ constant.
 
-<img src="play_mode.gif" alt="overview" width="600" height="600">
+<img src="images/play_mode.gif" alt="overview" width="600" height="600">
 
 ## 4.Experimental Mode and the algorithms used:
 
@@ -52,17 +52,17 @@ TARGET=[
 ]
 ```
 
-<img src="bfs.gif" alt="bfs" width="600" height="600">
+<img src="images/bfs.gif" alt="bfs" width="600" height="600">
 
 ## 4.1.bfs:
 __Breadth-first search__ (BFS) is an algorithm for searching a tree data structure for a node that satisfies a given property. It starts at the tree root and explores all nodes at the present depth prior to moving on to the nodes at the next depth level. Extra memory, usually a queue, is needed to keep track of the child nodes that were encountered but not yet explored.
 
-<img src="bfs_exp.gif" alt="bfs" width="400" height="400">
+<img src="images/bfs_exp.gif" alt="bfs" width="400" height="400">
 
 ## 4.2.dfs:
 __Depth-first search__ (DFS) is an algorithm for traversing or searching tree or graph data structures. The algorithm starts at the root node (selecting some arbitrary node as the root node in the case of a graph) and explores as far as possible along each branch before backtracking.
 
-<img src="dfs_exp.gif" alt="dfs" width="400" height="400">
+<img src="images/dfs_exp.gif" alt="dfs" width="400" height="400">
 
 ## 4.3.limited dfs :
 __limited dfs__ is a state space/graph search strategy in which a depth-limited version of depth-first search is run repeatedly with increasing depth limits until the goal is found.
@@ -70,13 +70,13 @@ __limited dfs__ is a state space/graph search strategy in which a depth-limited 
 ## 4.4.A*:
 __A*__ is a heuristic algorithm sacrifices optimality, with precision and accuracy for speed, to solve problems faster and more efficiently.
 
-<img src="Astar.gif" alt="A*" width="400" height="400">
+<img src="images/Astar.gif" alt="A*" width="400" height="400">
 
 ## 5.Conclution:
 
 After running these algorithms we get this:
 
-<img src="final_res.jpg" alt="A*" width="550" height="500">
+<img src="images/final_res.jpg" alt="A*" width="550" height="500">
 
 __we can notice that the number of visited nodes in the A* algorithm is the smallest and the limited dfs(with a limit of 3) does not have a solution(-1)__
 

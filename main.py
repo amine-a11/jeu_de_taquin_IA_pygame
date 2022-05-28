@@ -77,7 +77,7 @@ b5=Button(20,20,"back to menu",WIN,150,30)
 b6=Button(10,GAME_HEIGHT+65,"Reset",WIN,50,30)
 
 nbdenoeudsvisites={'Largeur':-1,'Profondeur':-1,'Prof limite':-1,'A*':-1}
-BACKGROUNDIMAGE=pygame.transform.scale(pygame.image.load('background_image.jpg'),(WIDTH,HEIGHT))
+BACKGROUNDIMAGE=pygame.transform.scale(pygame.image.load('images/background_image.jpg'),(WIDTH,HEIGHT))
 # -----------------------End CONST-----------------------------------------------
 
 # --------------------Star window title and icon-------------------------------
